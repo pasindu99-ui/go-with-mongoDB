@@ -12,6 +12,9 @@ import (
 )
 
 func UpdateUser(c echo.Context) error {
+	user_name := c.FormValue("user_name")
+	email := c.FormValue("email")
+
 	url := configs.EnvMongoURI()
 	// Set up MongoDB connection
 	clientOptions := options.Client().ApplyURI(url)
@@ -19,7 +22,6 @@ func UpdateUser(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-
 	// Check the connection
 	err = client.Ping(context.Background(), nil)
 	if err != nil {
@@ -30,12 +32,12 @@ func UpdateUser(c echo.Context) error {
 	AccessToDb := client.Database("Users").Collection("User_details")
 
 	// Define the filter to identify the document(s) to update
-	filter := bson.M{"user_name": "pasindu"}
+	filter := bson.M{"user_name": user_name}
 
 	// Define the update operation
 	update := bson.M{
 		"$set": bson.M{
-			"email": "newemail@example.com",
+			"email": email,
 		},
 	}
 

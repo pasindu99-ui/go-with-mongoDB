@@ -12,6 +12,7 @@ import (
 )
 
 func DeleteUser(c echo.Context) error {
+	user_name := c.FormValue("user_name")
 	// Set up MongoDB connection
 	url := configs.EnvMongoURI()
 	// Set up MongoDB connection
@@ -31,7 +32,7 @@ func DeleteUser(c echo.Context) error {
 	collection := client.Database("Users").Collection("User_details")
 
 	// Define the filter to identify the document(s) to delete
-	filter := bson.M{"user_name": "pasindu"}
+	filter := bson.M{"user_name": user_name}
 
 	// Perform the delete operation
 	result, err := collection.DeleteMany(context.Background(), filter)

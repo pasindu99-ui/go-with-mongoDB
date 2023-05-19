@@ -12,6 +12,11 @@ import (
 )
 
 func InsertUser(c echo.Context) error {
+
+	user_name := c.FormValue("user_name")
+	email := c.FormValue("email")
+	password := c.FormValue("password")
+
 	url := configs.EnvMongoURI()
 	// Set up MongoDB connection
 	clientOptions := options.Client().ApplyURI(url)
@@ -31,15 +36,15 @@ func InsertUser(c echo.Context) error {
 
 	// Create a new document
 	person := person{
-		username: "John",
-		email:    "pasindutt",
-		password: "123",
+		username: user_name,
+		email:    email,
+		password: password,
 	}
 
 	document := bson.M{
-		"name":     person.username,
-		"email":    person.email,
-		"password": person.password,
+		"user_name": person.username,
+		"email":     person.email,
+		"password":  person.password,
 	}
 
 	// Insert the document
