@@ -11,7 +11,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func UpdateUser(c echo.Context) error {
+func DeleteUser(c echo.Context) error {
+	// Set up MongoDB connection
 	url := configs.EnvMongoURI()
 	// Set up MongoDB connection
 	clientOptions := options.Client().ApplyURI(url)
@@ -27,25 +28,18 @@ func UpdateUser(c echo.Context) error {
 	}
 
 	// Access the database and collection
-	AccessToDb := client.Database("Users").Collection("User_details")
+	collection := client.Database("Users").Collection("User_details")
 
-	// Define the filter to identify the document(s) to update
+	// Define the filter to identify the document(s) to delete
 	filter := bson.M{"user_name": "pasindu"}
 
-	// Define the update operation
-	update := bson.M{
-		"$set": bson.M{
-			"email": "newemail@example.com",
-		},
-	}
-
-	// Perform the update operation
-	result, err := AccessToDb.UpdateOne(context.Background(), filter, update)
+	// Perform the delete operation
+	result, err := collection.DeleteMany(context.Background(), filter)
 	if err != nil {
 		return err
 	}
 
-	log.Printf("Matched %d document(s) and modified %d document(s)\n", result.MatchedCount, result.ModifiedCount)
-	return c.JSON(200, "Updated a single document: ")
+	log.Printf("Deleted %d document(s)\n", result.DeletedCount)
+	return c.JSON(200, "Deleted a single document: ")
 
 }

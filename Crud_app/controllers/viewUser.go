@@ -4,27 +4,27 @@ import (
 	"Crud_app/configs"
 	"context"
 	"fmt"
-	"log"
 
+	"github.com/labstack/echo"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func ViewUser() {
+func ViewUser(c echo.Context) error {
 	url := configs.EnvMongoURI()
 	// Set up MongoDB connection
 	clientOptions := options.Client().ApplyURI(url)
 	client, err := mongo.Connect(context.Background(), clientOptions)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	// Check the connection
 	err = client.Ping(context.Background(), nil)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	// Access the database and collection
@@ -33,7 +33,7 @@ func ViewUser() {
 	// Read data from the collection
 	cursor, err := AccessToDb.Find(context.Background(), bson.M{})
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer cursor.Close(context.Background())
 
@@ -41,12 +41,14 @@ func ViewUser() {
 	for cursor.Next(context.Background()) {
 		var result bson.M
 		if err := cursor.Decode(&result); err != nil {
-			log.Fatal(err)
+			return err
 		}
 		fmt.Println(result)
+		return c.JSON(200, result)
 	}
 
 	if err := cursor.Err(); err != nil {
-		log.Fatal(err)
+		return err
 	}
+	return c.JSON(200, "Viewed all documents: ")
 }
