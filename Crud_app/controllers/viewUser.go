@@ -3,7 +3,6 @@ package controllers
 import (
 	"Crud_app/configs"
 	"context"
-	"fmt"
 
 	"github.com/labstack/echo"
 	"go.mongodb.org/mongo-driver/bson"
@@ -35,6 +34,9 @@ func ViewUser(c echo.Context) error {
 	if err != nil {
 		return err
 	}
+
+	var results []bson.M
+
 	defer cursor.Close(context.Background())
 
 	// Iterate over the cursor to access the documents
@@ -43,12 +45,12 @@ func ViewUser(c echo.Context) error {
 		if err := cursor.Decode(&result); err != nil {
 			return err
 		}
-		fmt.Println(result)
-		return c.JSON(200, result)
+		results = append(results, result)
+
 	}
 
 	if err := cursor.Err(); err != nil {
 		return err
 	}
-	return c.JSON(200, "Viewed all documents: ")
+	return c.JSON(200, results)
 }

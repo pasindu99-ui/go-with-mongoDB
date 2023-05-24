@@ -8,7 +8,7 @@ import (
 
 func UserRoute(e *echo.Echo) {
 	e.POST("/create-user", controllers.InsertUser)
-	e.GET("/update-user", controllers.UpdateUser)
+	e.POST("/update-user", controllers.UpdateUser)
 	e.DELETE("/delete-user", controllers.DeleteUser)
 	e.GET("/view-user", controllers.ViewUser)
 

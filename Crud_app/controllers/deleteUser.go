@@ -13,6 +13,7 @@ import (
 
 func DeleteUser(c echo.Context) error {
 	user_name := c.FormValue("user_name")
+
 	// Set up MongoDB connection
 	url := configs.EnvMongoURI()
 	// Set up MongoDB connection
