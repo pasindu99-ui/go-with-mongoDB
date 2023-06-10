@@ -13,7 +13,7 @@ import (
 
 func InsertUser(c echo.Context) error {
 
-	user_name := c.FormValue("user_name")
+	username := c.FormValue("user_name")
 	email := c.FormValue("email")
 	password := c.FormValue("password")
 
@@ -36,15 +36,15 @@ func InsertUser(c echo.Context) error {
 
 	// Create a new document
 	person := person{
-		username: user_name,
+		username: username,
 		email:    email,
 		password: password,
 	}
 
 	document := bson.M{
-		"user_name": person.username,
-		"email":     person.email,
-		"password":  person.password,
+		"username": person.username,
+		"email":    person.email,
+		"password": person.password,
 	}
 
 	// Insert the document

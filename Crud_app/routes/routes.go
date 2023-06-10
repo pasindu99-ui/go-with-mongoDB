@@ -11,5 +11,6 @@ func UserRoute(e *echo.Echo) {
 	e.POST("/update-user", controllers.UpdateUser)
 	e.DELETE("/delete-user", controllers.DeleteUser)
 	e.GET("/view-user", controllers.ViewUser)
+	e.POST("/login", controllers.LoginControll)
 
 }

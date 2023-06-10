@@ -10,7 +10,6 @@ import (
 func main() {
 	e := echo.New()
 
-	//run database
 	configs.ConnectDb()
 
 	routes.UserRoute(e)
