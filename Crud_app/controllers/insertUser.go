@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"context"
+	"fmt"
+	"net/http"
 
 	"Crud_app/configs"
 
@@ -13,9 +15,19 @@ import (
 
 func InsertUser(c echo.Context) error {
 
-	username := c.FormValue("user_name")
-	email := c.FormValue("email")
-	password := c.FormValue("password")
+	var requestData User
+
+	// Bind the JSON data from the request body into the requestData variable
+	if err := c.Bind(&requestData); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid JSON data")
+	}
+
+	// Access the values from the requestData variable
+	Username := requestData.Username
+	email := requestData.Email
+	Password := requestData.Password
+
+	fmt.Println("Username: ", Username, "Password: ", Password)
 
 	url := configs.EnvMongoURI()
 	// Set up MongoDB connection
@@ -36,9 +48,9 @@ func InsertUser(c echo.Context) error {
 
 	// Create a new document
 	person := person{
-		username: username,
+		username: Username,
 		email:    email,
-		password: password,
+		password: Password,
 	}
 
 	document := bson.M{

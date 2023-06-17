@@ -19,7 +19,6 @@ type User struct {
 }
 
 func LoginControll(c echo.Context) error {
-	fmt.Println("called")
 
 	var requestData User
 
@@ -31,6 +30,7 @@ func LoginControll(c echo.Context) error {
 	// Access the values from the requestData variable
 	Username := requestData.Username
 	Password := requestData.Password
+	fmt.Println("Username: ", Username, "Password: ", Password)
 
 	if Username == "" {
 		// will be printed on the console, since str1 is empty
@@ -73,6 +73,7 @@ func LoginControll(c echo.Context) error {
 
 		} else {
 			checkPassword := users[0].Password
+			println(users[0].Password)
 
 			if checkPassword == Password {
 				return c.JSON(200, "Login Success")

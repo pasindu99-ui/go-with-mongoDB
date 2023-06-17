@@ -3,6 +3,7 @@ package controllers
 import (
 	"Crud_app/configs"
 	"context"
+	"fmt"
 
 	"github.com/labstack/echo"
 	"go.mongodb.org/mongo-driver/bson"
@@ -11,6 +12,7 @@ import (
 )
 
 func ViewUser(c echo.Context) error {
+	fmt.Println("called view")
 	url := configs.EnvMongoURI()
 	// Set up MongoDB connection
 	clientOptions := options.Client().ApplyURI(url)
