@@ -2,15 +2,12 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"Crud_app/configs"
 
 	"github.com/labstack/echo"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func InsertUser(c echo.Context) error {
@@ -27,21 +24,7 @@ func InsertUser(c echo.Context) error {
 	email := requestData.Email
 	Password := requestData.Password
 
-	fmt.Println("Username: ", Username, "Password: ", Password)
-
-	url := configs.EnvMongoURI()
-	// Set up MongoDB connection
-	clientOptions := options.Client().ApplyURI(url)
-	client, err := mongo.Connect(context.Background(), clientOptions)
-	if err != nil {
-		return err
-	}
-
-	// Check the connection
-	err = client.Ping(context.Background(), nil)
-	if err != nil {
-		return err
-	}
+	client := configs.ConnectDb()
 
 	// Access the collection
 	collection := client.Database("Users").Collection("User_details")
@@ -60,7 +43,7 @@ func InsertUser(c echo.Context) error {
 	}
 
 	// Insert the document
-	_, err = collection.InsertOne(context.Background(), document)
+	_, err := collection.InsertOne(context.Background(), document)
 	if err != nil {
 		return err
 	}

@@ -3,36 +3,33 @@ package controllers
 import (
 	"Crud_app/configs"
 	"context"
+	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/labstack/echo"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func UpdateUser(c echo.Context) error {
-	user_name := c.FormValue("user_name")
-	email := c.FormValue("email")
+	var requestData User
 
-	url := configs.EnvMongoURI()
-	// Set up MongoDB connection
-	clientOptions := options.Client().ApplyURI(url)
-	client, err := mongo.Connect(context.Background(), clientOptions)
-	if err != nil {
-		return err
+	// Bind the JSON data from the request body into the requestData variable
+	if err := c.Bind(&requestData); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid JSON data")
 	}
-	// Check the connection
-	err = client.Ping(context.Background(), nil)
-	if err != nil {
-		return err
-	}
+
+	// Access the values from the requestData variable
+	user_name := requestData.Username
+	email := requestData.Email
+	fmt.Println("Username: ", user_name, "email: ", email)
+	client := configs.ConnectDb()
 
 	// Access the database and collection
 	AccessToDb := client.Database("Users").Collection("User_details")
 
 	// Define the filter to identify the document(s) to update
-	filter := bson.M{"user_name": user_name}
+	filter := bson.M{"username": user_name}
 
 	// Define the update operation
 	update := bson.M{

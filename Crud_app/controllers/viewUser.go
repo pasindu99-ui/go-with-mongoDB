@@ -3,31 +3,14 @@ package controllers
 import (
 	"Crud_app/configs"
 	"context"
-	"fmt"
 
 	"github.com/labstack/echo"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func ViewUser(c echo.Context) error {
-	fmt.Println("called view")
-	url := configs.EnvMongoURI()
-	// Set up MongoDB connection
-	clientOptions := options.Client().ApplyURI(url)
-	client, err := mongo.Connect(context.Background(), clientOptions)
 
-	if err != nil {
-		return err
-	}
-
-	// Check the connection
-	err = client.Ping(context.Background(), nil)
-	if err != nil {
-		return err
-	}
-
+	client := configs.ConnectDb()
 	// Access the database and collection
 	AccessToDb := client.Database("Users").Collection("User_details")
 

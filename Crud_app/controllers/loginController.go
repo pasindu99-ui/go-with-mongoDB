@@ -3,13 +3,10 @@ package controllers
 import (
 	"Crud_app/configs"
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type User struct {
@@ -30,7 +27,6 @@ func LoginControll(c echo.Context) error {
 	// Access the values from the requestData variable
 	Username := requestData.Username
 	Password := requestData.Password
-	fmt.Println("Username: ", Username, "Password: ", Password)
 
 	if Username == "" {
 		// will be printed on the console, since str1 is empty
@@ -42,20 +38,7 @@ func LoginControll(c echo.Context) error {
 
 		filter := bson.M{"username": requestData.Username}
 
-		url := configs.EnvMongoURI()
-		// Set up MongoDB connection
-		clientOptions := options.Client().ApplyURI(url)
-		client, err := mongo.Connect(context.Background(), clientOptions)
-
-		if err != nil {
-			return err
-		}
-
-		// Check the connection
-		err = client.Ping(context.Background(), nil)
-		if err != nil {
-			return err
-		}
+		client := configs.ConnectDb()
 
 		// Access the database and collection
 		AccessToDb := client.Database("Users").Collection("User_details")

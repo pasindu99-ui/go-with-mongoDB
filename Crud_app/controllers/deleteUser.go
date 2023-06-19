@@ -4,36 +4,29 @@ import (
 	"Crud_app/configs"
 	"context"
 	"log"
+	"net/http"
 
 	"github.com/labstack/echo"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func DeleteUser(c echo.Context) error {
-	user_name := c.FormValue("user_name")
+	var requestData User
 
-	// Set up MongoDB connection
-	url := configs.EnvMongoURI()
-	// Set up MongoDB connection
-	clientOptions := options.Client().ApplyURI(url)
-	client, err := mongo.Connect(context.Background(), clientOptions)
-	if err != nil {
-		return err
+	// Bind the JSON data from the request body into the requestData variable
+	if err := c.Bind(&requestData); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid JSON data")
 	}
 
-	// Check the connection
-	err = client.Ping(context.Background(), nil)
-	if err != nil {
-		return err
-	}
+	// Access the values from the requestData variable
+	user_name := requestData.Username
 
+	client := configs.ConnectDb()
 	// Access the database and collection
 	collection := client.Database("Users").Collection("User_details")
 
 	// Define the filter to identify the document(s) to delete
-	filter := bson.M{"user_name": user_name}
+	filter := bson.M{"username": user_name}
 
 	// Perform the delete operation
 	result, err := collection.DeleteMany(context.Background(), filter)
